@@ -46,8 +46,8 @@ Conçu pour les **professeurs de physique-chimie** — principalement au lycée,
 👉 Rendez-vous dans l'onglet [**Releases**](../../releases) pour télécharger la dernière version de NeoMeca.
 
 Deux versions sont disponibles :
-- **Version légère** (PyInstaller) — 8 Mo environ
-- **Version standard** (Nuitka) — 250 Mo environ, plus stable
+- **Version légère** (PyInstaller) — 140 Mo environ
+- **Version standard** (Nuitka) — 200 Mo environ, plus stable
 
 ---
 
