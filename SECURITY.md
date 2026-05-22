@@ -1,55 +1,55 @@
-# Security Policy
+# Politique de Sécurité
 
-## Supported Versions
+## Versions Supportées
 
-NeoMeca currently supports the following versions with security updates :
+NeoMeca supporte actuellement les versions suivantes avec mises à jour de sécurité :
 
-| Version | Status | Release | Support End |
-|---------|--------|---------|-------------|
-| 1.5.x   | Upcoming | 26 May – 3 June 2026 | TBD |
-| 1.0.x   | Active | 8 May 2026 | 2026-12-31 |
-| < 1.0   | Unsupported | - | - |
+| Version | Statut | Sortie | Support jusqu'au |
+|---------|--------|--------|------------------|
+| 1.5.x   | À venir | 26 mai – 3 juin 2026 | TBD |
+| 1.0.x   | Active | 8 mai 2026 | 31 décembre 2026 |
+| < 1.0   | Non supportée | - | - |
 
-## Reporting a Vulnerability
+## Signaler une Vulnérabilité
 
-If you discover a security vulnerability in NeoMeca, please report it **privately** :
+Si vous découvrez une vulnérabilité de sécurité dans NeoMeca, merci de la signaler **en privé** :
 
-1. **Do not open a public GitHub issue**
-2. Open a [GitHub Security Advisory](https://github.com/AinsiParlaitZarathoustra/NeoMeca/security/advisories)
-3. Or email via GitHub's private vulnerability reporting feature
+1. **Ne pas ouvrir de rapport public sur GitHub**
+2. Utilisez [GitHub Security Advisory](https://github.com/AinsiParlaitZarathoustra/NeoMeca/security/advisories)
+3. Ou contactez via la fonctionnalité de rapport de vulnérabilité privée de GitHub
 
-### Response Timeline
+### Chronologie de Réponse
 
-- **Acknowledgment :** Within 48 hours
-- **Assessment :** Within 1 week
-- **Fix & release :** Depends on severity
-  - Critical : Within 2 weeks
-  - High : Within 1 month
-  - Medium/Low : Within next scheduled release
+- **Accusé de réception :** Dans les 48 heures
+- **Évaluation :** Dans la semaine
+- **Correctif & publication :** Selon la gravité
+  - Critique : Dans les 2 semaines
+  - Haute : Dans le mois
+  - Moyenne/Basse : Prochaine version
 
-### Vulnerability Disclosure
+### Divulgation Publique
 
-Once fixed and released, we will publicly disclose the vulnerability with credit to the reporter (unless otherwise requested).
+Une fois corrigée et publiée, la vulnérabilité sera divulguée publiquement avec crédit au rapporteur (sauf demande contraire).
 
-## Security Expectations
+## Attentes de Sécurité
 
-NeoMeca is educational software designed for physics teachers and students. It is **not** intended for production systems or sensitive data handling.
+NeoMeca est un logiciel éducatif conçu pour les professeurs et élèves de physique. Il n'est **pas** destiné aux systèmes de production ou au traitement de données sensibles.
 
-Security issues we take seriously :
-- Buffer overflows or memory corruption
-- Arbitrary code execution
-- Privilege escalation
-- Data exfiltration
+Vulnérabilités que nous prenons au sérieux :
+- Dépassements de buffer ou corruption mémoire
+- Exécution de code arbitraire
+- Escalade de privilèges
+- Exfiltration de données
 
-Issues we may decline :
-- Denial of Service attacks
-- Social engineering vectors
-- Issues in third-party dependencies (report directly to those projects)
+Problèmes que nous pourrions décliner :
+- Attaques par déni de service
+- Vecteurs d'ingénierie sociale
+- Problèmes dans les dépendances tierces (signaler directement à ces projets)
 
-## Third-Party Dependencies
+## Dépendances Tierces
 
-NeoMeca uses well-maintained libraries (OpenCV, FFmpeg, PySide6, NumPy, etc.). For vulnerabilities in these dependencies, please report directly to their respective projects.
+NeoMeca utilise des bibliothèques bien maintenues (OpenCV, FFmpeg, PySide6, NumPy, etc.). Pour les vulnérabilités dans ces dépendances, merci de signaler directement aux projets respectifs.
 
 ---
 
-*Last updated : 21 May 2026*
+*Dernière mise à jour : 22 mai 2026*
