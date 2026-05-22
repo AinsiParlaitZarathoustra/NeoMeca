@@ -1,83 +1,52 @@
 # NeoMeca
-
-> Logiciel de pointage vidéo pour l'analyse du mouvement en physique-chimie
-
----
+Logiciel de pointage vidéo pour l'analyse du mouvement en physique-chimie
 
 ## Présentation
 
-**NeoMeca** est la version moderne d'AviMeca, logiciel de référence dans l'enseignement de la physique-chimie.  
-Il permet de pointer image par image des objets en mouvement sur une vidéo, d'en extraire des données cinématiques et de les exporter vers un tableur.
+NeoMeca permet de pointer image par image des objets en mouvement sur une vidéo, d'extraire des données cinématiques et de les exporter vers un tableur.
 
-Conçu pour les **professeurs de physique-chimie** — principalement au lycée, mais utilisable à tout niveau —, NeoMeca reprend les fondamentaux d'AviMéca tout en les modernisant : formats vidéo élargis, tableaux enrichis, interface repensée.
+Conçu pour les professeurs de physique-chimie au lycée.
 
----
+## Formats supportés
 
-## Nouveautés par rapport à AviMeca
-
-| Fonctionnalité | AviMeca | NeoMeca |
-|----------------|---------|---------|
-| Format `.avi` | ✅ | ✅ |
-| Format `.mp4` | ❌ | ✅ |
-| Format `.mov` | ❌ | ✅ |
-| Tableaux de données | Basiques | Enrichis |
-| Interface | Ancienne génération | Modernisée |
-
-> 💡 Les fonctionnalités avancées sont détaillées dans le menu **Aide** de l'application.
-
----
+- `.mp4`
+- `.mov`  
+- `.avi`
 
 ## Installation
 
-**Aucune installation requise.** Il suffit de double-cliquer sur l'exécutable.
+Aucune installation requise. Double-cliquer sur l'exécutable.
 
-### Configuration minimale
+**Configuration minimale**
 
-| Élément | Requis |
-|--------|--------|
-| Système | Windows 10 ou supérieur |
-| Stockage | 8 Mo *(version PyInstaller)* / 250 Mo *(version Nuitka)* |
-| Autres | Aucun prérequis |
-
----
+- Windows 10 ou supérieur
+- 140 Mo (version PyInstaller) / 200 Mo (version Nuitka)
 
 ## Téléchargement
 
-👉 Rendez-vous dans l'onglet [**Releases**](../../releases) pour télécharger la dernière version de NeoMeca.
-
-Deux versions sont disponibles :
-- **Version légère** (PyInstaller) — 140 Mo environ
-- **Version standard** (Nuitka) — 200 Mo environ, plus stable
-
----
+Onglet [Releases](../../releases).
 
 ## Utilisation
 
-1. Double-cliquez sur `NeoMeca.exe`
-2. Ouvrez une vidéo au format `.mp4`, `.mov` ou `.avi`
-3. Étalonnez l'image
-4. Pointez vos objets image par image
-5. Exportez les données vers Excel ou votre tableur
-
-> Pour toutes les fonctionnalités avancées, consultez le menu **Aide** dans l'application.
-
----
+1. Ouvrir une vidéo
+2. Étalonner l'image
+3. Pointer les objets image par image
+4. Exporter les données (Excel, CSV)
 
 ## Signaler un problème
 
-Utilisez l'onglet [**Issues**](../../issues) de ce dépôt pour :
-- Signaler un bug
-- Proposer une amélioration
-- Poser une question
+Onglet [Issues](../../issues).
 
----
+## Licence et dépendances
 
-## Licence
+NeoMeca est distribué gratuitement pour usage personnel et éducatif.
 
-Ce logiciel est distribué **gratuitement** pour un usage personnel et éducatif.  
-Toute utilisation commerciale, redistribution ou modification est interdite sans autorisation explicite de l'auteur.  
-Voir le fichier [`LICENSE`](./LICENSE) pour les détails.
+Ce logiciel utilise les bibliothèques suivantes :
+- **OpenCV** (licence Apache 2.0)
+- **FFmpeg** (licence LGPL 2.1+)
+- **PySide6 / Qt6** (licence LGPL 3.0)
+- **Numba** (licence BSD)
 
----
+Les licences complètes de ces dépendances sont disponibles dans le dossier `licenses/`.
 
-*NeoMeca — Logiciel de pointage vidéo pour l'enseignement des sciences physiques*
+Toute redistribution commerciale ou modification sans autorisation explicite de l'auteur est interdite.
