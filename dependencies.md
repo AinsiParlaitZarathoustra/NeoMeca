@@ -5,16 +5,10 @@ Leurs licences complètes sont reproduites ci-dessous.
 
 ---
 
-## PySide6 / Qt6
+## CustomTkinter
 
-- **Licence :** GNU Lesser General Public License v3.0 (LGPL-3.0)
-- **Copyright :** The Qt Company Ltd.
-- **Source :** https://www.qt.io/licensing
-- **Texte complet :** https://www.gnu.org/licenses/lgpl-3.0.txt
-
-Conformément aux termes de la LGPL, l'utilisateur est libre de remplacer
-la bibliothèque PySide6/Qt6 par une version modifiée compatible.
-
+**Licence** : MIT
+**Source :** https://pypi.org/project/customtkinter/
 ---
 
 ## OpenCV
