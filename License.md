@@ -26,7 +26,7 @@ respectives disponibles dans le dossier `licenses/` :
 |---|---|---|
 | OpenCV | Apache 2.0 | https://github.com/opencv/opencv |
 | FFmpeg | LGPL 2.1+ | https://ffmpeg.org/legal.html |
-| CustomTkinter | MIT | [https://www.qt.io/licensing](https://github.com/TomSchimansky/CustomTkinter/blob/master/LICENSE) |
+| CustomTkinter | MIT | (https://github.com/TomSchimansky/CustomTkinter/blob/master/LICENSE) |
 | Numba | BSD 2-Clause | https://github.com/numba/numba |
 
 Conformément aux termes LGPL, l'utilisateur peut remplacer les 
