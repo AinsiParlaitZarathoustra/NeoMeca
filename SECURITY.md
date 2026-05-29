@@ -47,7 +47,7 @@ Problèmes que nous pourrions décliner :
 
 ## Dépendances Tierces
 
-NeoMeca utilise des bibliothèques bien maintenues (OpenCV, FFmpeg, PySide6, NumPy, etc.). Pour les vulnérabilités dans ces dépendances, merci de signaler directement aux projets respectifs.
+NeoMeca utilise des bibliothèques bien maintenues (OpenCV, FFmpeg, CustomTkinter, NumPy, etc.). Pour les vulnérabilités dans ces dépendances, merci de signaler directement aux projets respectifs.
 
 ---
 
