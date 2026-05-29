@@ -6,9 +6,8 @@ NeoMeca supporte actuellement les versions suivantes avec mises à jour de sécu
 
 | Version | Statut | Sortie | Support jusqu'au |
 |---------|--------|--------|------------------|
-| 1.5.x   | À venir | 26 mai – 3 juin 2026 | TBD |
+| 1.2.x   | À venir | 26 mai – 31 décembre 2026 | TBD |
 | 1.0.x   | Active | 8 mai 2026 | 31 décembre 2026 |
-| < 1.0   | Non supportée | - | - |
 
 ## Signaler une Vulnérabilité
 
