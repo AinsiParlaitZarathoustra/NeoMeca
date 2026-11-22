@@ -117,7 +117,8 @@ jobs:
             $hash = (Get-FileHash -Path $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
             "$hash  $($_.Name)"
           }
-          [System.IO.File]::WriteAllLines("$PWD/release-assets/SHA256SUMS-windows.txt", $lines)
+          $content = ($lines -join "`n") + "`n"
+          [System.IO.File]::WriteAllText("$PWD/release-assets/SHA256SUMS-windows.txt", $content, [System.Text.UTF8Encoding]::new($false))
 
       - name: Déposer les artefacts Windows
         uses: actions/upload-artifact@v4
@@ -197,6 +198,7 @@ jobs:
       - name: Vérifier l'intégrité SHA256 des binaires
         run: |
           cd release-assets
+          sed -i 's/\r$//' SHA256SUMS-windows.txt SHA256SUMS-linux.txt
           sha256sum -c SHA256SUMS-windows.txt
           sha256sum -c SHA256SUMS-linux.txt
           cat SHA256SUMS-windows.txt SHA256SUMS-linux.txt > SHA256SUMS.txt
