@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    name: Vérifications (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer les dépendances système Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            ffmpeg
+
+      - name: Configurer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Configurer Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - name: Installer cargo-nextest
+        uses: taiki-e/install-action@nextest
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Installer les dépendances npm
+        run: npm ci
+
+      - name: Vérifier TypeScript, tests unitaires et build frontend
+        shell: bash
+        run: |
+          npm run check
+          npm run test:types
+          npm run test:unit
+          npm run build
+
+      - name: Vérifier Rust (check, clippy, nextest)
+        working-directory: src-tauri
+        shell: bash
+        run: |
+          cargo check
+          cargo clippy --all-targets -- -D warnings -A linker_messages
+          cargo nextest run --workspace

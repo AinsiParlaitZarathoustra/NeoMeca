@@ -1,0 +1,37 @@
+[package]
+name = "neomeca2"
+version = "26.11.22"
+description = "Pointage vidéo et analyse mécanique pour la physique-chimie"
+authors = ["ainsiparlaitzarathoustra"]
+license = "MPL-2.0"
+edition = "2024"
+rust-version = "1.88"
+
+
+[lib]
+# Le suffixe `_lib` évite un conflit de nom entre la bibliothèque et le binaire
+# (problème propre à Windows : https://github.com/rust-lang/cargo/issues/8519).
+name = "neomeca2_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-clipboard-manager = "2"
+rust_xlsxwriter = "0.104.0"
+
+
+# Profil optimisé pour la taille du binaire
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true
