@@ -193,12 +193,12 @@ export function ExportDialog({
                     fileName: metadata.fileName,
                     defaultLabel: useAll ? "mesures" : pointName,
                   });
-                  if (saved) setFeedback("Classeur Excel (.xlsx) enregistré.");
+                  if (saved) setFeedback("Classeur Excel enregistré.");
                 })
               }
             >
               <Sheet />
-              Exporter en Excel (.xlsx)
+              Exporter en Excel
             </Button>
           </div>
 
@@ -283,12 +283,12 @@ export function ExportDialog({
                       pointName,
                       includeEnergies,
                     );
-                    if (saved) setFeedback("Fichier Regressi (.rw3) enregistré.");
+                    if (saved) setFeedback("Fichier Regressi enregistré.");
                   })
                 }
               >
                 <Download />
-                Regressi (.rw3)
+                Regressi
               </Button>
             </div>
 
@@ -311,7 +311,7 @@ export function ExportDialog({
               }
             >
               {copied ? <Check /> : <ClipboardCopy />}
-              {copied ? "Copié !" : "Copier le tableau (TSV)"}
+              {copied ? "Copié !" : "Copier le tableau"}
             </Button>
           </div>
 
@@ -349,12 +349,12 @@ export function ExportDialog({
                     styles,
                     settings,
                   });
-                  if (saved) setFeedback("Image annotée (.png) enregistrée.");
+                  if (saved) setFeedback("Image annotée enregistrée.");
                 })
               }
             >
               <Image />
-              Exporter l&apos;image annotée (.png)
+              Exporter l&apos;image annotée
             </Button>
           </div>
 

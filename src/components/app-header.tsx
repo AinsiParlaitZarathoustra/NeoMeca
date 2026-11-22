@@ -61,7 +61,7 @@ export function AppHeader({
             Ouvrir un projet
           </Button>
         </TooltipTrigger>
-        <TooltipContent>Charger un fichier .neomeca.json</TooltipContent>
+        <TooltipContent>Ouvrir un projet enregistré</TooltipContent>
       </Tooltip>
 
       <Tooltip>
@@ -76,7 +76,7 @@ export function AppHeader({
             Enregistrer le projet
           </Button>
         </TooltipTrigger>
-        <TooltipContent>Enregistrer le projet (.neomeca.json)</TooltipContent>
+        <TooltipContent>Enregistrer la séance en cours</TooltipContent>
       </Tooltip>
 
       <Tooltip>
@@ -91,7 +91,7 @@ export function AppHeader({
             Exporter
           </Button>
         </TooltipTrigger>
-        <TooltipContent>Exporter Excel, CSV, Regressi (.rw3), TSV ou PNG</TooltipContent>
+        <TooltipContent>Exporter les mesures ou l&apos;image</TooltipContent>
       </Tooltip>
 
       <div className="ml-auto flex items-center gap-2">

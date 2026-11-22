@@ -42,16 +42,15 @@ NéoMeca est codé en **Rust**, un langage très moderne, très rapide et surtou
 
 ## Configuration minimale requise
 
-- **Windows** : Windows 10 (64 bits, version 1803 ou ultérieure) ou Windows 11, avec WebView2 Runtime (installé automatiquement par l'installeur si nécessaire).
-- **Linux** : distribution 64 bits (`x86_64`) récente avec WebKitGTK 4.1 (`libwebkit2gtk-4.1`) et GTK 3 (paquets `.AppImage`, `.deb` et `.zip` portable).
-- **Traitement vidéo** : `ffmpeg` et `ffprobe` disponibles dans le `PATH` système (ou placés dans un dossier `bin/` à côté de l'exécutable).
+- **Windows** : Windows 10 ou Windows 11 (64 bits).
+- **Linux** : distribution 64 bits (`x86_64`) récente (GTK 3 / WebKitGTK 4.1).
+- **Vidéo** : `ffmpeg` et `ffprobe` installés sur le poste (ou placés dans un dossier `bin/` à côté de l'exécutable).
 
 ## Pile technique
 
-- Tauri v2 (Rust)
-- React, TypeScript, Tailwind CSS et shadcn/ui
-- FFmpeg et FFprobe pour la lecture des métadonnées et l'extraction exacte d'images
-- `rust_xlsxwriter` pour l'export natif Excel (`.xlsx`)
+- **Tauri v2 (Rust)** pour le coeur natif, la sécurité et l'export Excel (`rust_xlsxwriter`).
+- **React, TypeScript et shadcn/ui** pour l'interface.
+- **FFmpeg / FFprobe** pour la lecture vidéo multi-formats.
 
 ## Commandes de développement
 

@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag CalVer cible (ex. 2026.11.22 ou 2026.11.22-2150)"
+        description: "Tag CalVer cible (ex. 2026.11.22)"
         required: false
+        default: "2026.11.22"
         type: string
       draft:
         description: "Créer en brouillon (draft)"
@@ -15,14 +16,13 @@ on:
   push:
     tags:
       - "[0-9][0-9][0-9][0-9].*"
-      - "v[0-9][0-9][0-9][0-9].*"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   verify:
-    name: Contrôles et tests avant publication
+    name: Contrôles et tests
     runs-on: ubuntu-22.04
     steps:
       - name: Récupérer le dépôt
@@ -63,14 +63,14 @@ jobs:
       - name: Installer les dépendances npm
         run: npm ci
 
-      - name: Vérifier TypeScript, tests unitaires et build frontend
+      - name: Vérifier frontend et tests unitaires
         run: |
           npm run check
           npm run test:types
           npm run test:unit
           npm run build
 
-      - name: Vérifier Rust (check, clippy, nextest)
+      - name: Vérifier Rust
         working-directory: src-tauri
         run: |
           cargo check
@@ -78,7 +78,7 @@ jobs:
           cargo nextest run --workspace
 
   build-windows:
-    name: Build Windows (NSIS, MSI, ZIP)
+    name: Build Windows (setup.exe, msi, zip)
     needs: verify
     runs-on: windows-latest
     steps:
@@ -102,10 +102,10 @@ jobs:
       - name: Installer les dépendances npm
         run: npm ci
 
-      - name: Compiler les paquets Windows (nsis, msi)
+      - name: Compiler les paquets Windows
         run: npx tauri build --bundles nsis,msi
 
-      - name: Préparer les livrables Windows
+      - name: Préparer les livrables et calculer les SHA256
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -113,6 +113,11 @@ jobs:
           Copy-Item src-tauri/target/release/bundle/nsis/*-setup.exe release-assets/
           Copy-Item src-tauri/target/release/bundle/msi/*.msi release-assets/
           node scripts/package-portable.mjs --platform windows --out-dir release-assets
+          $lines = Get-ChildItem release-assets -File | Sort-Object Name | ForEach-Object {
+            $hash = (Get-FileHash -Path $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            "$hash  $($_.Name)"
+          }
+          [System.IO.File]::WriteAllLines("$PWD/release-assets/SHA256SUMS-windows.txt", $lines)
 
       - name: Déposer les artefacts Windows
         uses: actions/upload-artifact@v4
@@ -121,7 +126,7 @@ jobs:
           path: release-assets/*
 
   build-linux:
-    name: Build Linux (AppImage, DEB, ZIP)
+    name: Build Linux (AppImage, deb, zip)
     needs: verify
     runs-on: ubuntu-22.04
     steps:
@@ -159,15 +164,16 @@ jobs:
       - name: Installer les dépendances npm
         run: npm ci
 
-      - name: Compiler les paquets Linux (appimage, deb)
+      - name: Compiler les paquets Linux
         run: npx tauri build --bundles appimage,deb
 
-      - name: Préparer les livrables Linux
+      - name: Préparer les livrables et calculer les SHA256
         run: |
           mkdir -p release-assets
           cp src-tauri/target/release/bundle/appimage/*.AppImage release-assets/
           cp src-tauri/target/release/bundle/deb/*.deb release-assets/
           node scripts/package-portable.mjs --platform linux --out-dir release-assets
+          (cd release-assets && sha256sum * > SHA256SUMS-linux.txt)
 
       - name: Déposer les artefacts Linux
         uses: actions/upload-artifact@v4
@@ -176,22 +182,28 @@ jobs:
           path: release-assets/*
 
   publish-release:
-    name: Publier la GitHub Release
+    name: Vérifier SHA256 et publier la Release
     needs: [build-windows, build-linux]
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     steps:
-      - name: Récupérer le dépôt
-        uses: actions/checkout@v4
-
       - name: Télécharger tous les livrables
         uses: actions/download-artifact@v4
         with:
           path: release-assets
           merge-multiple: true
 
+      - name: Vérifier l'intégrité SHA256 des binaires
+        run: |
+          cd release-assets
+          sha256sum -c SHA256SUMS-windows.txt
+          sha256sum -c SHA256SUMS-linux.txt
+          cat SHA256SUMS-windows.txt SHA256SUMS-linux.txt > SHA256SUMS.txt
+          rm -f SHA256SUMS-windows.txt SHA256SUMS-linux.txt
+
       - name: Déterminer le tag et les notes de version
         id: meta
-        shell: bash
         env:
           EVENT_NAME: ${{ github.event_name }}
           INPUT_TAG: ${{ inputs.tag }}
@@ -204,7 +216,7 @@ jobs:
           elif [[ "$REF" == refs/tags/* ]]; then
             TAG="$REF_NAME"
           else
-            TAG="$(date -u +%Y.%m.%d-%H%M)"
+            TAG="2026.11.22"
           fi
 
           if [[ "$TAG" == *-* ]]; then
@@ -224,12 +236,13 @@ jobs:
           echo "draft=$DRAFT" >> "$GITHUB_OUTPUT"
 
           sed 's/^          //' << 'EOF' > release-notes.md
-          Voici la nouvelle version de NeoMeca, outil libre de pointage vidéo et d'analyse mécanique pour la physique-chimie.
+          Voici la nouvelle version de NéoMeca, outil libre de pointage vidéo et d'analyse mécanique pour la physique-chimie.
 
           ## Fichiers disponibles
 
           - **Windows** : installeur `.setup.exe` (NSIS), paquet `.msi` (WiX) et archive portable `.zip`.
           - **Linux** : `.AppImage`, paquet `.deb` et archive portable `.zip`.
+          - **Intégrité** : le fichier `SHA256SUMS.txt` contient les empreintes SHA-256 vérifiées de tous les paquets.
 
           ## Avertissement sur les binaires open source non signés
 
@@ -237,7 +250,7 @@ jobs:
 
           ## Méthodologie et vérifications de la publication automatique
 
-          J'ai généré et vérifié automatiquement les 6 livrables desktop (Windows et Linux) à partir du dépôt via GitHub Actions, après exécution des contrôles TypeScript, Vite, Clippy et des suites de tests unitaires.
+          J'ai généré, contrôlé par empreinte SHA-256 et vérifié automatiquement les 6 livrables desktop (Windows et Linux) via GitHub Actions, après exécution des tests TypeScript, Vite, Clippy et Rust.
           EOF
 
       - name: Créer la GitHub Release
