@@ -68,8 +68,9 @@ export function FfmpegStatusBadge() {
           <p>{status.ffmpegVersion ?? "ffmpeg : introuvable"}</p>
           <p>{status.ffprobeVersion ?? "ffprobe : introuvable"}</p>
           <p>
-            Installez FFmpeg et ajoutez <code>ffmpeg</code> et <code>ffprobe</code> au PATH,
-            puis relancez NeoMeca. La lecture des vidéos en dépend.
+            Vérifiez le dossier <code>bin/</code> de NeoMeca ou ajoutez{" "}
+            <code>ffmpeg</code> et <code>ffprobe</code> au PATH, puis relancez
+            l&apos;application.
           </p>
         </div>
       </TooltipContent>

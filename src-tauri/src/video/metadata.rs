@@ -218,7 +218,7 @@ fn probe_video_sync(path_str: &str) -> Result<VideoMetadata, String> {
         .output()
         .map_err(|error| {
             if error.kind() == ErrorKind::NotFound {
-                "ffprobe est introuvable. Installez FFmpeg et ajoutez-le au PATH.".to_string()
+                "ffprobe est introuvable dans l'application et dans le PATH système.".to_string()
             } else {
                 format!("Impossible de lancer ffprobe : {error}")
             }

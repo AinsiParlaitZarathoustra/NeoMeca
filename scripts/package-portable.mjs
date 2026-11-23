@@ -7,12 +7,13 @@ import process from "node:process";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 
-/** Analyse les arguments CLI (--platform, --out-dir, --version). */
+/** Analyse les arguments CLI (--platform, --out-dir, --version, --require-ffmpeg). */
 function parseArgs(argv) {
   const result = {
     platform: process.platform === "win32" ? "windows" : "linux",
     outDir: path.join(ROOT, "dist-release"),
     version: null,
+    requireFfmpeg: false,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -22,12 +23,14 @@ function parseArgs(argv) {
       result.outDir = path.resolve(argv[++i]);
     } else if (arg === "--version" && argv[i + 1]) {
       result.version = argv[++i].trim() || null;
+    } else if (arg === "--require-ffmpeg") {
+      result.requireFfmpeg = true;
     }
   }
   return result;
 }
 
-/** Lit la version CalVer configurée dans src-tauri/tauri.conf.json. */
+/** Lit la version intégrée configurée dans src-tauri/tauri.conf.json. */
 function readAppVersion() {
   const confPath = path.join(ROOT, "src-tauri", "tauri.conf.json");
   const conf = JSON.parse(fs.readFileSync(confPath, "utf8"));
@@ -56,6 +59,31 @@ function resolveBinary(platform) {
   );
 }
 
+/** Recherche les binaires FFmpeg et FFprobe embarqués pour la plateforme cible. */
+function resolveSidecarTools(platform) {
+  const ext = platform === "windows" ? ".exe" : "";
+  const triple =
+    platform === "windows" ? "x86_64-pc-windows-msvc" : "x86_64-unknown-linux-gnu";
+  const resolved = {};
+
+  for (const tool of ["ffmpeg", "ffprobe"]) {
+    const candidates = [
+      path.join(ROOT, "src-tauri", "bin", `${tool}${ext}`),
+      path.join(ROOT, "src-tauri", "target", "release", "bin", `${tool}${ext}`),
+      path.join(ROOT, "src-tauri", "binaries", `${tool}-${triple}${ext}`),
+      path.join(ROOT, "src-tauri", "target", "release", `${tool}${ext}`),
+    ];
+    const match = candidates.find(
+      (candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isFile(),
+    );
+    if (match) {
+      resolved[`${tool}${ext}`] = match;
+    }
+  }
+
+  return resolved;
+}
+
 /** Compresse le répertoire temporaire en archive .zip portable. */
 function createZipArchive(stagingDir, zipPath, platform) {
   if (fs.existsSync(zipPath)) {
@@ -80,7 +108,7 @@ function createZipArchive(stagingDir, zipPath, platform) {
   }
 }
 
-/** Point d'entrée : prépare un dossier sain avec le binaire, LICENSE et README.md puis crée le .zip. */
+/** Point d'entrée : prépare le dossier portable autonome (binaire, bin/ FFmpeg, notices et docs). */
 function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.platform !== "windows" && args.platform !== "linux") {
@@ -89,6 +117,17 @@ function main() {
 
   const version = args.version ?? readAppVersion();
   const binarySrc = resolveBinary(args.platform);
+  const sidecarTools = resolveSidecarTools(args.platform);
+  const expectedCount = 2;
+  if (Object.keys(sidecarTools).length < expectedCount) {
+    const message =
+      "Binaires FFmpeg / FFprobe embarqués introuvables dans src-tauri/bin/ (exécutez scripts/build-ffmpeg-minimal.sh).";
+    if (args.requireFfmpeg) {
+      throw new Error(message);
+    }
+    console.warn(`Avertissement : ${message}`);
+  }
+
   const targetBinName = args.platform === "windows" ? "NeoMeca.exe" : "neomeca";
   const zipName = `NeoMeca_${version}_${args.platform}_x64.zip`;
 
@@ -102,7 +141,19 @@ function main() {
       fs.chmodSync(destBinary, 0o755);
     }
 
-    for (const docFile of ["LICENSE", "README.md"]) {
+    if (Object.keys(sidecarTools).length > 0) {
+      const stagingBinDir = path.join(stagingDir, "bin");
+      fs.mkdirSync(stagingBinDir, { recursive: true });
+      for (const [fileName, srcPath] of Object.entries(sidecarTools)) {
+        const destPath = path.join(stagingBinDir, fileName);
+        fs.copyFileSync(srcPath, destPath);
+        if (args.platform === "linux") {
+          fs.chmodSync(destPath, 0o755);
+        }
+      }
+    }
+
+    for (const docFile of ["LICENSE", "THIRD_PARTY_NOTICES.txt", "README.md"]) {
       const src = path.join(ROOT, docFile);
       if (!fs.existsSync(src)) {
         throw new Error(`Fichier obligatoire manquant : ${docFile}`);

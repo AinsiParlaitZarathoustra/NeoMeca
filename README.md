@@ -44,13 +44,13 @@ NéoMeca est codé en **Rust**, un langage très moderne, très rapide et surtou
 
 - **Windows** : Windows 10 ou Windows 11 (64 bits).
 - **Linux** : distribution 64 bits (`x86_64`) récente (GTK 3 / WebKitGTK 4.1).
-- **Vidéo** : `ffmpeg` et `ffprobe` installés sur le poste (ou placés dans un dossier `bin/` à côté de l'exécutable).
+- **Vidéo** : aucune installation séparée requise, FFmpeg et FFprobe (profil minimal sous licence LGPL v2.1+) sont intégrés nativement à NéoMeca.
 
 ## Pile technique
 
 - **Tauri v2 (Rust)** pour le coeur natif, la sécurité et l'export Excel (`rust_xlsxwriter`).
 - **React, TypeScript et shadcn/ui** pour l'interface.
-- **FFmpeg / FFprobe** pour la lecture vidéo multi-formats.
+- **FFmpeg / FFprobe** embarqués (profil LGPL minimal) pour la lecture vidéo multi-formats.
 
 ## Commandes de développement
 

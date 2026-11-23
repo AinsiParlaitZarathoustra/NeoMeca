@@ -2191,7 +2191,7 @@ dependencies = [
 
 [[package]]
 name = "neomeca2"
-version = "26.11.22"
+version = "26.11.23"
 dependencies = [
  "rust_xlsxwriter",
  "serde",

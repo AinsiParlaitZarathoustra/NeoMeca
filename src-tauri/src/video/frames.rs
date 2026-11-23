@@ -168,7 +168,7 @@ fn run_ffmpeg_extract(
 
     let output = command.output().map_err(|error| {
         if error.kind() == ErrorKind::NotFound {
-            "ffmpeg est introuvable. Installez FFmpeg et ajoutez-le au PATH.".to_string()
+            "ffmpeg est introuvable dans l'application et dans le PATH système.".to_string()
         } else {
             format!("Impossible de lancer ffmpeg : {error}")
         }

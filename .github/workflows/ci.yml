@@ -54,6 +54,7 @@ jobs:
       - name: Vérifier TypeScript, tests unitaires et build frontend
         shell: bash
         run: |
+          bash -n scripts/build-ffmpeg-minimal.sh
           npm run check
           npm run test:types
           npm run test:unit

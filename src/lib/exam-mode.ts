@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 /** Version applicative intégrée aux binaires et installeurs (sans préfixe v.). */
-export const APP_VERSION = "26.11.22";
+export const APP_VERSION = "26.11.23";
 
 export interface ExamModeSessionState {
   examMode: boolean;

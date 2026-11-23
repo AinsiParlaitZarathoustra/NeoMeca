@@ -31,14 +31,51 @@ fn executable_name(tool: &str) -> String {
     }
 }
 
-/// Cherche l'outil dans un dossier `bin/` placé à côté de l'exécutable courant.
-fn sidecar_path(tool: &str) -> Option<PathBuf> {
-    let exe = std::env::current_exe().ok()?;
-    let candidate = exe.parent()?.join("bin").join(executable_name(tool));
-    candidate.is_file().then_some(candidate)
+/// Construit la liste ordonnée des emplacements sidecar possibles pour `tool`.
+///
+/// Ordre de priorité :
+/// 1. À côté de l'exécutable courant (`<exe_dir>/<tool>(.exe)`).
+/// 2. Dans `<exe_dir>/bin/<tool>(.exe)` (paquets Windows, archive portable et dev).
+/// 3. Sous Linux uniquement : dossiers ressources AppImage et `.deb` (`lib/NeoMeca/bin/`).
+fn sidecar_candidates_for_exe(exe: &Path, tool: &str) -> Vec<PathBuf> {
+    let mut candidates = Vec::new();
+    let file_name = executable_name(tool);
+
+    if let Some(exe_dir) = exe.parent() {
+        candidates.push(exe_dir.join(&file_name));
+        candidates.push(exe_dir.join("bin").join(&file_name));
+
+        #[cfg(target_os = "linux")]
+        {
+            if let Some(app_dir) = std::env::var_os("APPDIR") {
+                let app_root = PathBuf::from(app_dir);
+                candidates.push(app_root.join("usr/lib/NeoMeca/bin").join(&file_name));
+                candidates.push(app_root.join("usr/lib/neomeca2/bin").join(&file_name));
+            }
+            candidates.push(exe_dir.join("../lib/NeoMeca/bin").join(&file_name));
+            candidates.push(exe_dir.join("../lib/neomeca2/bin").join(&file_name));
+            candidates.push(PathBuf::from("/usr/lib/NeoMeca/bin").join(&file_name));
+            candidates.push(PathBuf::from("/usr/lib/neomeca2/bin").join(&file_name));
+        }
+    }
+
+    candidates
 }
 
-/// Résout le chemin de l'exécutable : dossier `bin/` prioritaire, sinon `PATH`.
+/// Renvoie le premier chemin sidecar existant dans la liste prioritaire.
+fn resolve_sidecar_for_exe(exe: &Path, tool: &str) -> Option<PathBuf> {
+    sidecar_candidates_for_exe(exe, tool)
+        .into_iter()
+        .find(|candidate| candidate.is_file())
+}
+
+/// Cherche l'outil embarqué à côté de l'exécutable courant ou dans ses dossiers ressources.
+fn sidecar_path(tool: &str) -> Option<PathBuf> {
+    let exe = std::env::current_exe().ok()?;
+    resolve_sidecar_for_exe(&exe, tool)
+}
+
+/// Résout le chemin de l'exécutable : sidecar embarqué prioritaire, sinon `PATH` système.
 pub(crate) fn resolve_tool(tool: &str) -> PathBuf {
     sidecar_path(tool).unwrap_or_else(|| PathBuf::from(tool))
 }
@@ -139,5 +176,61 @@ mod tests {
     #[test]
     fn missing_tool_is_not_detected() {
         assert_eq!(locate("neomeca2-outil-inexistant"), (None, None));
+    }
+
+    #[test]
+    fn sidecar_priority_prefers_sibling_then_bin_then_none() {
+        let root = std::env::temp_dir().join(format!("neomeca2-sidecar-test-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
+        let exe_dir = root.join("app");
+        let bin_dir = exe_dir.join("bin");
+        std::fs::create_dir_all(&bin_dir).unwrap();
+
+        let fake_exe = exe_dir.join(executable_name("neomeca2"));
+        std::fs::write(&fake_exe, b"").unwrap();
+
+        // Aucun sidecar présent : repli attendu sur None (donc PATH système via resolve_tool).
+        assert_eq!(resolve_sidecar_for_exe(&fake_exe, "ffmpeg"), None);
+
+        // Uniquement dans bin/ : ce chemin doit être retenu.
+        let bin_tool = bin_dir.join(executable_name("ffmpeg"));
+        std::fs::write(&bin_tool, b"bin").unwrap();
+        assert_eq!(resolve_sidecar_for_exe(&fake_exe, "ffmpeg"), Some(bin_tool));
+
+        // Si un binaire est aussi présent directement à côté de l'exécutable, il est prioritaire.
+        let sibling_tool = exe_dir.join(executable_name("ffmpeg"));
+        std::fs::write(&sibling_tool, b"sibling").unwrap();
+        assert_eq!(
+            resolve_sidecar_for_exe(&fake_exe, "ffmpeg"),
+            Some(sibling_tool)
+        );
+
+        let _ = std::fs::remove_dir_all(&root);
+    }
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn sidecar_resolves_linux_bundle_resources_folder() {
+        let root = std::env::temp_dir().join(format!(
+            "neomeca2-linux-sidecar-test-{}",
+            std::process::id()
+        ));
+        let _ = std::fs::remove_dir_all(&root);
+        let usr_bin = root.join("usr/bin");
+        let lib_bin = root.join("usr/lib/NeoMeca/bin");
+        std::fs::create_dir_all(&usr_bin).unwrap();
+        std::fs::create_dir_all(&lib_bin).unwrap();
+
+        let fake_exe = usr_bin.join("neomeca2");
+        let lib_tool = lib_bin.join("ffprobe");
+        std::fs::write(&fake_exe, b"").unwrap();
+        std::fs::write(&lib_tool, b"probe").unwrap();
+
+        assert_eq!(
+            resolve_sidecar_for_exe(&fake_exe, "ffprobe"),
+            Some(lib_tool)
+        );
+
+        let _ = std::fs::remove_dir_all(&root);
     }
 }

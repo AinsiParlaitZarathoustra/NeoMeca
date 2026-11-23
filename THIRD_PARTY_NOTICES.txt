@@ -1,0 +1,38 @@
+NOTICES LOGICIELLES TIERCES - NEOMECA
+======================================
+
+Le code source propre à NéoMeca est distribué sous licence Mozilla Public License 2.0 (voir le fichier LICENSE).
+
+----------------------------------------------------------------------
+1. FFmpeg et FFprobe (profil minimal sous licence LGPL v2.1+)
+----------------------------------------------------------------------
+
+NéoMeca embarque des exécutables autonomes et minimaux de FFmpeg et FFprobe (version 7.1.1) pour la lecture de métadonnées vidéo et l'extraction d'images.
+
+Ces binaires sont compilés exclusivement sous licence GNU Lesser General Public License (LGPL v2.1 ou ultérieure), sans aucun composant GPL ni non-free :
+- Options de compilation strictes : --disable-everything --disable-gpl --disable-nonfree --enable-small
+- Script de compilation reproductible : scripts/build-ffmpeg-minimal.sh (dans le dépôt NéoMeca)
+- Code source officiel FFmpeg 7.1.1 : https://ffmpeg.org/releases/ffmpeg-7.1.1.tar.xz
+- Empreinte SHA-256 de l'archive source : 733984395e0dbbe5c046abda2dc49a5544e7e0e1e2366bba849222ae9e3a03b1
+
+Conformément à la LGPL v2.1, vous pouvez également remplacer les exécutables FFmpeg / FFprobe situés dans le dossier bin/ de l'application (ou placer vos propres versions dans votre PATH système après suppression des binaires embarqués).
+
+Résumé de la notice GNU Lesser General Public License v2.1 :
+
+  FFmpeg is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  FFmpeg is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  Texte complet de la LGPL v2.1 : https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+
+----------------------------------------------------------------------
+2. Dépendances Rust et JavaScript
+----------------------------------------------------------------------
+
+NéoMeca s'appuie également sur des bibliothèques open source sous licences permissives compatibles MPL 2.0 (MIT, Apache-2.0, BSD), dont Tauri, serde, rust_xlsxwriter, React, Lucide, Tailwind CSS, shadcn/ui (Radix UI) et Recharts.

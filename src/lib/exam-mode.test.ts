@@ -27,7 +27,7 @@ test("le mode examen démarre inactif, ferme l'aide et bloque les infobulles non
   assert.equal(shouldSuppressTooltip(locked.examMode, true), false);
 });
 
-test("la version 26.11.22 est cohérente dans package.json, tauri.conf.json, Cargo.toml et l'UI", () => {
+test("la version 26.11.23 est cohérente dans package.json, tauri.conf.json, Cargo.toml et l'UI", () => {
   const rootDir = path.resolve(import.meta.dirname, "../..");
   const packageJson = JSON.parse(
     fs.readFileSync(path.join(rootDir, "package.json"), "utf8"),
@@ -43,12 +43,12 @@ test("la version 26.11.22 est cohérente dans package.json, tauri.conf.json, Car
     "utf8",
   );
 
-  assert.equal(APP_VERSION, "26.11.22");
+  assert.equal(APP_VERSION, "26.11.23");
   assert.equal(APP_VERSION.startsWith("v"), false);
   assert.equal(packageJson.version, APP_VERSION);
   assert.equal(tauriConf.version, APP_VERSION);
   assert.equal(tauriConf.bundle?.windows?.wix?.version, APP_VERSION);
-  assert.match(cargoToml, /^version = "26\.11\.22"/m);
+  assert.match(cargoToml, /^version = "26\.11\.23"/m);
 });
 
 test("isBrowserReloadKey identifie F5 et Ctrl+R / Cmd+R sans bloquer les autres touches", () => {
