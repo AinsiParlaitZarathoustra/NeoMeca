@@ -52,8 +52,10 @@ fn sidecar_candidates_for_exe(exe: &Path, tool: &str) -> Vec<PathBuf> {
                 candidates.push(app_root.join("usr/lib/NeoMeca/bin").join(&file_name));
                 candidates.push(app_root.join("usr/lib/neomeca2/bin").join(&file_name));
             }
-            candidates.push(exe_dir.join("../lib/NeoMeca/bin").join(&file_name));
-            candidates.push(exe_dir.join("../lib/neomeca2/bin").join(&file_name));
+            if let Some(prefix_dir) = exe_dir.parent() {
+                candidates.push(prefix_dir.join("lib/NeoMeca/bin").join(&file_name));
+                candidates.push(prefix_dir.join("lib/neomeca2/bin").join(&file_name));
+            }
             candidates.push(PathBuf::from("/usr/lib/NeoMeca/bin").join(&file_name));
             candidates.push(PathBuf::from("/usr/lib/neomeca2/bin").join(&file_name));
         }
